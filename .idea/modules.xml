@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.likelion.springsessionhw.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.likelion.springsessionhw.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/springsessionhw.iml" filepath="$PROJECT_DIR$/.idea/springsessionhw.iml" />
     </modules>
   </component>
