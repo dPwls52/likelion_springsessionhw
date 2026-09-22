@@ -6,17 +6,16 @@ import com.likelion.springsessionhw.guestbook.dto.GuestbookSummaryResponse;
 import com.likelion.springsessionhw.guestbook.dto.GuestbookUpdateRequest;
 import com.likelion.springsessionhw.guestbook.entity.Guestbook;
 import com.likelion.springsessionhw.guestbook.repository.GuestbookRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class GuestbookService {
-
     private final GuestbookRepository guestbookRepository;
 
     public List<GuestbookSummaryResponse> getGuestbookSummaries() {
@@ -36,34 +35,16 @@ public class GuestbookService {
     }
 
     public GuestbookDetailResponse createGuestbook(GuestbookCreateRequest request) {
+
         Guestbook guestbook = new Guestbook(
                 request.getTitle(),
                 request.getContent(),
                 request.getWriter(),
                 request.getPs()
         );
-
         Guestbook savedGuestbook = guestbookRepository.save(guestbook);
 
         return toDetailResponse(savedGuestbook);
-    }
-
-    public GuestbookDetailResponse getGuestbook(Long id) {
-        Guestbook guestbook = guestbookRepository.findById(id).orElseThrow();
-        return toDetailResponse(guestbook);
-    }
-
-    @Transactional
-    public GuestbookDetailResponse updateGuestbook(Long id, GuestbookUpdateRequest request) {
-        Guestbook guestbook = guestbookRepository.findById(id).orElseThrow();
-        guestbook.update(request.getTitle(), request.getContent(), request.getPs());
-        return toDetailResponse(guestbook);
-    }
-
-    @Transactional
-    public void deleteGuestbook(Long id) {
-        Guestbook guestbook = guestbookRepository.findById(id).orElseThrow();
-        guestbookRepository.delete(guestbook);
     }
 
     private GuestbookDetailResponse toDetailResponse(Guestbook guestbook) {
@@ -75,5 +56,36 @@ public class GuestbookService {
                 guestbook.getCreatedAt(),
                 guestbook.getPs()
         );
+    }
+
+    public GuestbookDetailResponse getGuestbook(Long guestbookId) {
+        Guestbook guestbook = findGuestbookById(guestbookId);
+        return toDetailResponse(guestbook);
+    }
+
+    private Guestbook findGuestbookById(Long guestbookId) {
+        return guestbookRepository.findById(guestbookId)
+                .orElseThrow();
+    }
+
+    @Transactional
+    public GuestbookDetailResponse updateGuestbook(
+            Long guestbookId,
+            GuestbookUpdateRequest request
+    ) {
+        Guestbook guestbook = findGuestbookById(guestbookId);
+
+        guestbook.update(
+                request.getTitle(),
+                request.getContent(),
+                request.getPs()
+        );
+        return toDetailResponse(guestbook);
+    }
+
+    @Transactional
+    public void deleteGuestbook(Long guestbookId) {
+        Guestbook guestbook = findGuestbookById(guestbookId);
+        guestbookRepository.delete(guestbook);
     }
 }
